@@ -32,20 +32,28 @@ async function procesarRespuesta<T>(response: Response): Promise<T | null> {
   return data as T
 }
 
+export interface PaginaResponse<T> {
+  contenido: T[]
+  paginaActual: number
+  totalPaginas: number
+  totalElementos: number
+}
+
 export async function listarProductos(
   usuario: string,
   clave: string,
   nombre = '',
-): Promise<Producto[]> {
-  const url = nombre.trim()
-    ? `${API_URL}?nombre=${encodeURIComponent(nombre.trim())}`
-    : API_URL
+  page = 0,
+  size = 10,
+): Promise<PaginaResponse<Producto>> {
+  const params = new URLSearchParams({ page: String(page), size: String(size) })
+  if (nombre.trim()) params.set('nombre', nombre.trim())
 
-  const response = await fetch(url, {
+  const response = await fetch(`${API_URL}?${params}`, {
     headers: { Authorization: crearAuthorization(usuario, clave) },
   })
 
-  return (await procesarRespuesta<Producto[]>(response)) ?? []
+  return (await procesarRespuesta<PaginaResponse<Producto>>(response))!
 }
 
 export async function crearProducto(

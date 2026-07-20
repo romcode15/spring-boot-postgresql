@@ -21,15 +21,12 @@ async function procesarRespuesta(response) {
   return data;
 }
 
-export async function listarProductos(usuario, clave, nombre = '') {
-  const url = nombre.trim()
-    ? `${API_URL}?nombre=${encodeURIComponent(nombre.trim())}`
-    : API_URL;
+export async function listarProductos(usuario, clave, nombre = '', page = 0, size = 10) {
+  const params = new URLSearchParams({ page, size });
+  if (nombre.trim()) params.set('nombre', nombre.trim());
 
-  const response = await fetch(url, {
-    headers: {
-      Authorization: crearAuthorization(usuario, clave)
-    }
+  const response = await fetch(`${API_URL}?${params}`, {
+    headers: { Authorization: crearAuthorization(usuario, clave) }
   });
 
   return procesarRespuesta(response);

@@ -1,63 +1,65 @@
 <main class="contenedor">
-  <h1>CRUD de productos con Angular y Spring Boot</h1>
+  <h1>CRUD de productos - Angular</h1>
 
-  <section class="formulario">
+  <section class="tarjeta">
+    <h2>Credenciales</h2>
+    <label>Usuario</label>
+    <input type="text" name="usuario" [(ngModel)]="usuario" />
+    <label>Contraseña</label>
+    <input type="password" name="clave" [(ngModel)]="clave" />
+  </section>
+
+  <section class="tarjeta">
     <h2>{{ editando ? 'Editar producto' : 'Registrar producto' }}</h2>
-
     <form (ngSubmit)="guardarProducto()">
       <label>Nombre</label>
-      <input type="text" name="nombre" [(ngModel)]="producto.nombre" required>
-
+      <input type="text" name="nombre" [(ngModel)]="producto.nombre" required />
       <label>Descripcion</label>
-      <input type="text" name="descripcion" [(ngModel)]="producto.descripcion" required>
-
+      <input type="text" name="descripcion" [(ngModel)]="producto.descripcion" required />
       <label>Precio</label>
-      <input type="number" name="precio" [(ngModel)]="producto.precio" required>
-
+      <input type="number" name="precio" [(ngModel)]="producto.precio" required />
       <label>Stock</label>
-      <input type="number" name="stock" [(ngModel)]="producto.stock" required>
-
+      <input type="number" name="stock" [(ngModel)]="producto.stock" required />
       <label>
-        <input type="checkbox" name="activo" [(ngModel)]="producto.activo">
-        Activo
+        <input type="checkbox" name="activo" [(ngModel)]="producto.activo" /> Activo
       </label>
-
       <button type="submit">{{ editando ? 'Actualizar' : 'Guardar' }}</button>
       <button type="button" (click)="limpiarFormulario()">Limpiar</button>
     </form>
   </section>
 
-  <section class="tabla">
+  <section class="tarjeta">
     <h2>Listado de productos</h2>
+    <input type="text" name="filtro" [(ngModel)]="filtro" placeholder="Buscar por nombre" />
+    <button type="button" (click)="buscar()">Buscar</button>
+
+    <p class="mensaje">{{ mensaje }}</p>
 
     <table>
       <thead>
-        <tr>
-          <th>ID</th>
-          <th>Nombre</th>
-          <th>Descripcion</th>
-          <th>Precio</th>
-          <th>Stock</th>
-          <th>Activo</th>
-          <th>Acciones</th>
-        </tr>
+        <tr><th>ID</th><th>Nombre</th><th>Precio</th><th>Stock</th><th>Activo</th><th>Acciones</th></tr>
       </thead>
       <tbody>
         @for (item of productos; track item.id) {
           <tr>
             <td>{{ item.id }}</td>
             <td>{{ item.nombre }}</td>
-            <td>{{ item.descripcion }}</td>
             <td>{{ item.precio }}</td>
             <td>{{ item.stock }}</td>
-            <td>{{ item.activo ? 'Si' : 'No' }}</td>
+            <td>{{ item.activo ? 'Sí' : 'No' }}</td>
             <td>
               <button type="button" (click)="editarProducto(item)">Editar</button>
-              <button type="button" (click)="eliminarProducto(item.id!)">Eliminar</button>
+              <button type="button" (click)="eliminarProducto(item.id)">Eliminar</button>
             </td>
           </tr>
         }
       </tbody>
     </table>
+
+    <div class="paginacion">
+      <button type="button" (click)="cargarProductos(pagina - 1)" [disabled]="pagina === 0">← Anterior</button>
+      <span>{{ pagina + 1 }} / {{ totalPaginas }} ({{ totalElementos }} registros)</span>
+      <button type="button" (click)="cargarProductos(pagina + 1)" [disabled]="pagina >= totalPaginas - 1">Siguiente →</button>
+    </div>
   </section>
 </main>

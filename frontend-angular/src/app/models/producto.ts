@@ -6,3 +6,10 @@ export interface Producto {
   stock: number;
   activo: boolean;
 }
+
+export interface PaginaResponse<T> {
+  contenido: T[];
+  paginaActual: number;
+  totalPaginas: number;
+  totalElementos: number;
+}

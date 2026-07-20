@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
-import { Producto } from '../models/producto';
+import { Producto, PaginaResponse } from '../models/producto';
 
 @Injectable({
   providedIn: 'root'
@@ -14,58 +14,28 @@ export class ProductoService {
   constructor(private http: HttpClient) {}
 
   private crearHeaders(usuario: string, clave: string): HttpHeaders {
-    const token = btoa(`${usuario}:${clave}`);
-
     return new HttpHeaders({
       'Content-Type': 'application/json',
-      'Authorization': `Basic ${token}`
+      'Authorization': `Basic ${btoa(`${usuario}:${clave}`)}`
     });
   }
 
-  listar(usuario: string, clave: string, nombre?: string): Observable<Producto[]> {
+  listar(usuario: string, clave: string, nombre: string, page: number, size: number): Observable<PaginaResponse<Producto>> {
     const headers = this.crearHeaders(usuario, clave);
-
-    if (nombre && nombre.trim() !== '') {
-      return this.http.get<Producto[]>(
-        `${this.apiUrl}?nombre=${nombre}`,
-        { headers }
-      );
-    }
-
-    return this.http.get<Producto[]>(this.apiUrl, { headers });
+    let params = new HttpParams().set('page', page).set('size', size);
+    if (nombre.trim()) params = params.set('nombre', nombre.trim());
+    return this.http.get<PaginaResponse<Producto>>(this.apiUrl, { headers, params });
   }
 
   crear(producto: Producto, usuario: string, clave: string): Observable<Producto> {
-    const headers = this.crearHeaders(usuario, clave);
-
-    return this.http.post<Producto>(
-      this.apiUrl,
-      producto,
-      { headers }
-    );
+    return this.http.post<Producto>(this.apiUrl, producto, { headers: this.crearHeaders(usuario, clave) });
   }
 
-  actualizar(
-    id: number,
-    producto: Producto,
-    usuario: string,
-    clave: string
-  ): Observable<Producto> {
-    const headers = this.crearHeaders(usuario, clave);
-
-    return this.http.put<Producto>(
-      `${this.apiUrl}/${id}`,
-      producto,
-      { headers }
-    );
+  actualizar(id: number, producto: Producto, usuario: string, clave: string): Observable<Producto> {
+    return this.http.put<Producto>(`${this.apiUrl}/${id}`, producto, { headers: this.crearHeaders(usuario, clave) });
   }
 
   eliminar(id: number, usuario: string, clave: string): Observable<void> {
-    const headers = this.crearHeaders(usuario, clave);
-
-    return this.http.delete<void>(
-      `${this.apiUrl}/${id}`,
-      { headers }
-    );
+    return this.http.delete<void>(`${this.apiUrl}/${id}`, { headers: this.crearHeaders(usuario, clave) });
   }
 }

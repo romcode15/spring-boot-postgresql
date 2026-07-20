@@ -1,5 +1,6 @@
 package com.espe.product.controller;
 
+import com.espe.product.dto.PaginaResponse;
 import com.espe.product.entity.Producto;
 import com.espe.product.service.ProductoService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -21,10 +22,20 @@ public class ProductoController {
     }
 
     @GetMapping
-    @Operation(summary = "Listar o buscar productos por nombre")
-    public List<Producto> listar(
-            @RequestParam(required = false) String nombre) {
-        return service.listar(nombre);
+    @Operation(summary = "Listar o buscar productos. Con page+size devuelve paginación; sin ellos devuelve todo.")
+    public ResponseEntity<?> listar(
+            @RequestParam(required = false) String nombre,
+            @RequestParam(required = false) Integer page,
+            @RequestParam(required = false) Integer size) {
+
+        if (page != null && size != null) {
+            PaginaResponse<Producto> respuesta =
+                    service.listarPaginado(nombre, page, size);
+            return ResponseEntity.ok(respuesta);
+        }
+
+        List<Producto> lista = service.listar(nombre);
+        return ResponseEntity.ok(lista);
     }
 
     @GetMapping("/{id}")

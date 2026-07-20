@@ -1,42 +1,82 @@
+/* ── Variables ── */
+:root {
+  --accent: #087ea4;       /* azul React */
+  --accent-dark: #05597a;
+  --bg-card: #fff;
+  --border: #e2e8f0;
+  --text: #1a202c;
+  --text-muted: #718096;
+  --radius: 10px;
+  --shadow: 0 2px 8px rgba(0,0,0,.08);
+}
+
+/* ── Layout ── */
 .contenedor {
-  max-width: 1100px;
-  margin: 20px auto;
-  font-family: Arial, sans-serif;
+  max-width: 900px;
+  margin: 32px auto;
+  padding: 0 16px;
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  color: var(--text);
 }
 
+h1 { font-size: 1.6rem; margin: 0 0 24px; color: var(--accent); }
+h2 { font-size: 1rem; font-weight: 600; margin: 0 0 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: .05em; }
+
+/* ── Tarjeta ── */
 .tarjeta {
-  border: 1px solid #ddd;
-  border-radius: 10px;
-  padding: 16px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
   margin-bottom: 16px;
+  box-shadow: var(--shadow);
 }
 
-label {
-  display: block;
-  margin-top: 8px;
-}
+/* ── Formulario ── */
+label { display: block; font-size: .85rem; font-weight: 500; margin: 10px 0 3px; }
 
-input {
+input[type="text"],
+input[type="number"],
+input[type="password"] {
   width: 100%;
-  padding: 8px;
-  margin-top: 4px;
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: .95rem;
+  box-sizing: border-box;
+  transition: border-color .2s;
 }
+input:focus { outline: none; border-color: var(--accent); }
 
+/* ── Botones ── */
 button {
-  margin: 8px 6px 8px 0;
-  padding: 8px 12px;
+  padding: 8px 16px;
+  margin: 10px 6px 0 0;
+  border: none;
+  border-radius: 6px;
+  font-size: .9rem;
+  cursor: pointer;
+  background: var(--accent);
+  color: #fff;
+  transition: background .2s;
 }
+button:hover { background: var(--accent-dark); }
 
-table {
-  width: 100%;
-  border-collapse: collapse;
-}
+/* ── Búsqueda ── */
+.tarjeta > input { max-width: 280px; display: inline-block; width: auto; margin-right: 8px; }
 
-th, td {
-  border: 1px solid #ccc;
-  padding: 8px;
-}
+/* ── Mensaje ── */
+.mensaje { font-size: .9rem; font-weight: 500; color: var(--accent-dark); min-height: 20px; margin: 10px 0 4px; }
 
-.mensaje {
-  font-weight: bold;
-}
+/* ── Tabla ── */
+table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: .9rem; }
+th { background: #f7fafc; color: var(--text-muted); font-weight: 600; text-align: left; padding: 10px 12px; border-bottom: 2px solid var(--border); }
+td { padding: 9px 12px; border-bottom: 1px solid var(--border); }
+tbody tr:last-child td { border-bottom: none; }
+tbody tr:hover { background: #ebf8ff; }
+td button { padding: 4px 10px; font-size: .8rem; margin: 0 4px 0 0; }
+
+/* ── Paginación ── */
+.paginacion { display: flex; align-items: center; gap: 12px; margin-top: 14px; font-size: .9rem; }
+.paginacion span { color: var(--text-muted); }
+button:disabled { background: #cbd5e0 !important; cursor: default; }

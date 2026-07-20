@@ -1,7 +1,12 @@
 package com.espe.product.service;
 
+import com.espe.product.dto.PaginaResponse;
 import com.espe.product.entity.Producto;
 import com.espe.product.repository.ProductoRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,6 +28,20 @@ public class ProductoService {
             return repository.findAll();
         }
         return repository.findByNombreContainingIgnoreCase(nombre.trim());
+    }
+
+    @Transactional(readOnly = true)
+    public PaginaResponse<Producto> listarPaginado(String nombre, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("id").ascending());
+        Page<Producto> resultado = (nombre == null || nombre.isBlank())
+                ? repository.findAll(pageable)
+                : repository.findByNombreContainingIgnoreCase(nombre.trim(), pageable);
+        return new PaginaResponse<>(
+                resultado.getContent(),
+                resultado.getNumber(),
+                resultado.getTotalPages(),
+                resultado.getTotalElements()
+        );
     }
 
     @Transactional(readOnly = true)
