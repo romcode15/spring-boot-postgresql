@@ -25,17 +25,17 @@ public class ProductoService {
     @Transactional(readOnly = true)
     public List<Producto> listar(String nombre) {
         if (nombre == null || nombre.isBlank()) {
-            return repository.findAll();
+            return repository.findByActivoTrue();
         }
-        return repository.findByNombreContainingIgnoreCase(nombre.trim());
+        return repository.findByNombreContainingIgnoreCaseAndActivoTrue(nombre.trim());
     }
 
     @Transactional(readOnly = true)
     public PaginaResponse<Producto> listarPaginado(String nombre, int page, int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("id").ascending());
         Page<Producto> resultado = (nombre == null || nombre.isBlank())
-                ? repository.findAll(pageable)
-                : repository.findByNombreContainingIgnoreCase(nombre.trim(), pageable);
+                ? repository.findByActivoTrue(pageable)
+                : repository.findByNombreContainingIgnoreCaseAndActivoTrue(nombre.trim(), pageable);
         return new PaginaResponse<>(
                 resultado.getContent(),
                 resultado.getNumber(),
@@ -80,6 +80,8 @@ public class ProductoService {
 
     @Transactional
     public void eliminar(Long id) {
-        repository.delete(buscar(id));
+        Producto producto = buscar(id);
+        producto.setActivo(false);
+        repository.save(producto);
     }
 }
